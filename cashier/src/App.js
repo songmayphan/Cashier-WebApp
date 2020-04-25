@@ -44,11 +44,16 @@ function App() {
   }
 
   const listItems = items.map((item) =>
-  <li key={item.id}>
+  <ul> 
+<li key={item.id}>
     {item.name}
-    {item.price} 
-    
   </li>
+<li> ${item.price}</li>
+<li> Quantity: {item.quantity}</li>
+<li style={{color: 'red'}}> ${(item.quantity * item.price).toFixed(2)}</li>
+  </ul>
+  
+
   
 );
 
@@ -71,7 +76,7 @@ function App() {
           <input type="submit" value="Submit" />
         </form>
         <ul>{listItems}</ul>
-        <p> Total Price: 
+        <p style={{color: 'green'}}> Total Price: 
           ${price} </p>
       </header>
 
