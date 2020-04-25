@@ -14,18 +14,22 @@ function App() {
   const [price, setPrice] = useState('');
   // ITEMS HOLD AN ARRAY OF ITEMS AND EACH ITEM CONTAINS THE NAME, QUANTITY AND PRICE
   const [items, setItems] = useState([])
+  console.log(items)
 
   var proxyUrl = 'https://cors-anywhere.herokuapp.com/'
   var targetUrl = "http://18.189.32.71:3000/barcode/"
 
   async function fetchData() {
+    console.log(proxyUrl + targetUrl + input);
     fetch(proxyUrl + targetUrl + input)
       .then((response) => response.json())
       .then((json) => {
         json.map(item => {
           setPrice(item.price)
+          console.log(`item.price ${item.price}`)
           item.items.map(again => {
-            setItems(again.cart)
+            setItems(again.cartReducer)
+            console.log(` again.cartReducer ${again.cartReducer}`);
           })
         })
         setData(json);
@@ -42,7 +46,10 @@ function App() {
   const listItems = items.map((item) =>
   <li key={item.id}>
     {item.name}
+    {item.price} 
+    
   </li>
+  
 );
 
   return (
@@ -64,6 +71,8 @@ function App() {
           <input type="submit" value="Submit" />
         </form>
         <ul>{listItems}</ul>
+        <p> Total Price: 
+          ${price} </p>
       </header>
 
 
