@@ -1,40 +1,49 @@
-import React , { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
 
 function App() {
+
+  // INPUT IS THE KEYBOARD INOUT
+  const [input, setInput] = useState("");
   const [hasError, setErrors] = useState(false);
+  // DATA IS THE RESPNSE FROM THE SERVER
   const [data, setData] = useState({});
-  // function getBarcode(barcodeID) {
-  //   console.log("get barcode successfully");
-  //   fetch("http://18.189.32.71:3000/barcode/", {
-  //     method: "GET",
-  //     headers: {
-  //       Accept: "application/json",
-  //       "Content-Type": "application/json",
-  //     },
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       console.log("Success:", data);
-        
-  //     });
-  // }
+  // PRICE CONTAINS THE TOTAL PRICE
+  const [price, setPrice] = useState('');
+  // ITEMS HOLD AN ARRAY OF ITEMS AND EACH ITEM CONTAINS THE NAME, QUANTITY AND PRICE
+  const [items, setItems] = useState([])
+
   var proxyUrl = 'https://cors-anywhere.herokuapp.com/'
   var targetUrl = "http://18.189.32.71:3000/barcode/"
-  useEffect(() => {
-    
-    async function fetchData() {
-      const res = await fetch(proxyUrl + targetUrl);
-      res
-        .json()
-        .then(res => setData(res))
-        .catch(err => setErrors(err));
-    }
 
+  async function fetchData() {
+    fetch(proxyUrl + targetUrl + input)
+      .then((response) => response.json())
+      .then((json) => {
+        json.map(item => {
+          setPrice(item.price)
+          item.items.map(again => {
+            setItems(again.cart)
+          })
+        })
+        setData(json);
+      })
+  }
+
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    //alert(`Submitting Name ${input}`)
+    console.log(targetUrl + input)
     fetchData();
-  });
+  }
+
+  const listItems = items.map((item) =>
+  <li key={item.id}>
+    {item.name}
+  </li>
+);
 
   return (
     <div className="App">
@@ -42,15 +51,24 @@ function App() {
         {/* <img src={logo} className="App-logo" alt="logo" /> */}
         <h1>
           Cashier Web App for Quick Scan
-        </h1>
-
-        {/* <input onChange={event => getBarcode(event.target.value)} /> */}
-        <span>{JSON.stringify(data)}</span>
+      </h1>
+        <form onSubmit={handleSubmit}>
+          <label>
+            Barcode 
+        <input
+              type="text"
+              value={input}
+              onChange={e => setInput(e.target.value)}
+            />
+          </label>
+          <input type="submit" value="Submit" />
+        </form>
+        <ul>{listItems}</ul>
       </header>
 
 
 
-</div>
+    </div>
   );
 }
 
